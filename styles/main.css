@@ -464,6 +464,10 @@ ul, ol {
     transform: translateY(-8px) rotate(-45deg);
   }
 
+  .hero {
+    padding-top: var(--spacing-20);
+  }
+
   .hero-title {
     font-size: var(--font-size-4xl);
   }
