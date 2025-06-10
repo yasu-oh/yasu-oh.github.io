@@ -324,8 +324,9 @@
 
 /* Social Link Colors */
 .social-link.twitter i { color: #1da1f2; }
-.social-link.github i { color: #333; }
 .social-link.linkedin i { color: #0077b5; }
+.social-link.facebook i { color: #1877f2; }
+.social-link.github i { color: #333; }
 .social-link.zenn i { color: #3ea8ff; }
 .social-link.huggingface i { color: #ff9d00; }
 
