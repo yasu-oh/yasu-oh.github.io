@@ -69,7 +69,7 @@
   position: absolute;
   left: 0;
   color: var(--primary-color);
-  font-weight: bold;
+  font-weight: 700;
   font-size: var(--font-size-lg);
 }
 
@@ -253,7 +253,7 @@
   position: absolute;
   left: 0;
   color: var(--primary-color);
-  font-weight: bold;
+  font-weight: 700;
 }
 
 /* Contact Section */
