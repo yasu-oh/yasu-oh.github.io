@@ -121,6 +121,41 @@
 }
 
 /* Animation Classes */
+.hero-animate-in {
+  opacity: 0;
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+.js .expertise-card,
+.js .achievement-card,
+.js .publication-card,
+.js .value-card,
+.js .social-link {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.js .expertise-card.is-visible,
+.js .achievement-card.is-visible,
+.js .publication-card.is-visible,
+.js .value-card.is-visible,
+.js .social-link.is-visible,
+.js-reveal.is-visible {
+  opacity: 1;
+  animation: fadeInUp 0.6s ease-out both;
+}
+
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+  z-index: 9999;
+  transition: width 0.1s ease;
+}
+
 .animate-fade-in-up {
   animation: fadeInUp 0.6s ease-out forwards;
 }

@@ -20,6 +20,10 @@
   <meta property="twitter:title" content="大野泰弘 - AI・GPU・ネットワーク技術者">
   <meta property="twitter:description" content="NTTPCコミュニケーションズで生成AI向けGPUクラスタと通信キャリア向けネットワークの設計・構築を手がけるフルスタックエンジニア">
 
+  <script>
+    document.documentElement.classList.add('js');
+  </script>
+
   <!-- External CSS -->
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/components.css">
@@ -41,11 +45,11 @@
         <a href="#publications" class="nav-link">Publications</a>
         <a href="#contact" class="nav-link">Contact</a>
       </div>
-      <div class="nav-toggle" id="nav-toggle">
+      <button class="nav-toggle" id="nav-toggle" type="button" aria-controls="nav-menu" aria-expanded="false" aria-label="メニューを開閉">
         <span class="bar"></span>
         <span class="bar"></span>
         <span class="bar"></span>
-      </div>
+      </button>
     </div>
   </nav>
 
@@ -55,7 +59,7 @@
       <div class="hero-content">
         <div class="hero-avatar">
           <div class="avatar-circle">
-            <img src="images/profile.jpg">
+            <img src="images/profile.jpg" alt="プロフィール写真" loading="eager" decoding="async" fetchpriority="high">
           </div>
         </div>
         <h1 class="hero-title">大野泰弘</h1>
@@ -208,6 +212,14 @@
             <div class="award-item">
               <div class="award-border award-gold"></div>
               <div class="award-content">
+                <h4>Best Personal Award</h4>
+                <p>NVIDIA Partner Network Award 2026</p>
+                <span class="award-date">2026年4月</span>
+              </div>
+            </div>
+            <div class="award-item">
+              <div class="award-border award-gold"></div>
+              <div class="award-content">
                 <h4>DigiCom 2021 Innovation Award</h4>
                 <p>NTTCOMグループ新規事業コンテスト 3位</p>
                 <span class="award-date">2022年1月</span>
@@ -281,7 +293,7 @@
           <div class="publication-content">
             <div class="publication-item">
               <h4>GPUクラスタ×生成AI</h4>
-              <img src="images/gpu_cluster_genai.jpg">
+              <img src="images/gpu_cluster_genai.jpg" alt="書籍『GPUクラスタ×生成AI』の表紙" loading="lazy" decoding="async">
               <p>13のポイントで実現する次世代基盤とビジュアライゼーション実践ガイド</p>
               <a href="https://www.amazon.co.jp/dp/4757104073">購入はこちら：[Amazon]</a>
               <div class="book-details">
@@ -309,42 +321,42 @@
           技術相談、講演依頼、共同研究などお気軽にお声がけください
         </p>
         <div class="social-links">
-          <a href="https://x.com/yasu_oh_" target="_blank" rel="noopener noreferrer" class="social-link twitter">
+          <a href="https://x.com/yasu_oh_" target="_blank" rel="noopener noreferrer" class="social-link twitter" data-platform="twitter" aria-label="Twitter/X @yasu_oh_ を開く">
             <i class="fab fa-twitter"></i>
             <div class="social-info">
               <span class="social-name">Twitter/X</span>
               <span class="social-handle">@yasu_oh_</span>
             </div>
           </a>
-          <a href="https://www.linkedin.com/in/yasuhiro-ohno" target="_blank" rel="noopener noreferrer" class="social-link linkedin">
+          <a href="https://www.linkedin.com/in/yasuhiro-ohno" target="_blank" rel="noopener noreferrer" class="social-link linkedin" data-platform="linkedin" aria-label="LinkedIn yasuhiro-ohno を開く">
             <i class="fab fa-linkedin"></i>
             <div class="social-info">
               <span class="social-name">LinkedIn</span>
               <span class="social-handle">yasuhiro-ohno</span>
             </div>
           </a>
-          <a href="https://www.facebook.com/oono.yasuhiro" target="_blank" rel="noopener noreferrer" class="social-link facebook">
+          <a href="https://www.facebook.com/oono.yasuhiro" target="_blank" rel="noopener noreferrer" class="social-link facebook" data-platform="facebook" aria-label="Facebook oono.yasuhiro を開く">
             <i class="fab fa-facebook-f"></i>
             <div class="social-info">
               <span class="social-name">Facebook</span>
               <span class="social-handle">oono.yasuhiro</span>
             </div>
           </a>
-          <a href="https://github.com/yasu-oh" target="_blank" rel="noopener noreferrer" class="social-link github">
+          <a href="https://github.com/yasu-oh" target="_blank" rel="noopener noreferrer" class="social-link github" data-platform="github" aria-label="GitHub yasu-oh を開く">
             <i class="fab fa-github"></i>
             <div class="social-info">
               <span class="social-name">GitHub</span>
               <span class="social-handle">yasu-oh</span>
             </div>
           </a>
-          <a href="https://zenn.dev/yasu_oh" target="_blank" rel="noopener noreferrer" class="social-link zenn">
+          <a href="https://zenn.dev/yasu_oh" target="_blank" rel="noopener noreferrer" class="social-link zenn" data-platform="zenn" aria-label="Zenn yasu_oh を開く">
             <i class="fas fa-book-open"></i>
             <div class="social-info">
               <span class="social-name">Zenn</span>
               <span class="social-handle">yasu_oh</span>
             </div>
           </a>
-          <a href="https://huggingface.co/yasu-oh" target="_blank" rel="noopener noreferrer" class="social-link huggingface">
+          <a href="https://huggingface.co/yasu-oh" target="_blank" rel="noopener noreferrer" class="social-link huggingface" data-platform="huggingface" aria-label="Hugging Face yasu-oh を開く">
             <i class="fas fa-robot"></i>
             <div class="social-info">
               <span class="social-name">Hugging Face</span>
@@ -360,14 +372,14 @@
   <footer class="footer">
     <div class="container">
       <p class="footer-text">
-        © 2025 大野泰弘 (Yasuhiro Ohno). All rights reserved.
+        © 2026 大野泰弘 (Yasuhiro Ohno). All rights reserved.
       </p>
     </div>
   </footer>
 
   <!-- External JavaScript -->
-  <script src="scripts/main.js"></script>
-  <script src="scripts/animations.js"></script>
-  <script src="scripts/navigation.js"></script>
+  <script src="scripts/navigation.js" defer></script>
+  <script src="scripts/animations.js" defer></script>
+  <script src="scripts/main.js" defer></script>
 </body>
 </html>

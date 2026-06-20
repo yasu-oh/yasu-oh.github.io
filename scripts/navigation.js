@@ -1,327 +1,202 @@
 // ===== Navigation Controller =====
+(function () {
+  'use strict';
 
-// Initialize navigation functionality
-function initializeNavigation() {
-  setupMobileMenu();
-  setupSmoothScrolling();
-  setupActiveNavigation();
+  const site = window.ProfileWebsite = window.ProfileWebsite || {};
 
-  console.log('Navigation initialized');
-}
-
-// ===== Mobile Menu =====
-function setupMobileMenu() {
-  const navToggle = document.querySelector('.nav-toggle');
-  const navMenu = document.querySelector('.nav-menu');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  if (!navToggle || !navMenu) return;
-
-  // Toggle mobile menu
-  navToggle.addEventListener('click', function() {
-    this.classList.toggle('active');
-    navMenu.classList.toggle('active');
-
-    // Toggle aria-expanded for accessibility
-    const isExpanded = this.classList.contains('active');
-    this.setAttribute('aria-expanded', isExpanded);
-
-    // Prevent body scroll when menu is open
-    if (isExpanded) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-  });
-
-  // Close menu when clicking on nav links
-  navLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      navToggle.classList.remove('active');
-      navMenu.classList.remove('active');
-      navToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    });
-  });
-
-  // Close menu when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
-      navToggle.classList.remove('active');
-      navMenu.classList.remove('active');
-      navToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    }
-  });
-
-  // Close menu on window resize
-  window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      navToggle.classList.remove('active');
-      navMenu.classList.remove('active');
-      navToggle.setAttribute('aria-expanded', 'false');
-      document.body.style.overflow = '';
-    }
-  });
-}
-
-// ===== Smooth Scrolling =====
-function setupSmoothScrolling() {
-  const navLinks = document.querySelectorAll('a[href^="#"]');
-
-  navLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      e.preventDefault();
-
-      const targetId = this.getAttribute('href');
-      const targetElement = document.querySelector(targetId);
-
-      if (targetElement) {
-        const headerHeight = document.querySelector('.navbar').offsetHeight;
-        const elementPosition = targetElement.offsetTop;
-        const offsetPosition = elementPosition - headerHeight - 20;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth'
-        });
-
-        // Update URL without triggering scroll
-        if (history.pushState) {
-          history.pushState(null, null, targetId);
-        }
-      }
-    });
-  });
-}
-
-// ===== Active Navigation =====
-function setupActiveNavigation() {
-  const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  if (sections.length === 0 || navLinks.length === 0) return;
-
-  // Create intersection observer for active navigation
-  const observerOptions = {
-    threshold: 0.3,
-    rootMargin: '-80px 0px -50% 0px'
+  const SELECTORS = {
+    navbar: '.navbar',
+    navToggle: '.nav-toggle',
+    navMenu: '.nav-menu',
+    navLink: '.nav-link',
+    section: 'section[id]'
   };
 
-  const navObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const sectionId = entry.target.getAttribute('id');
-        updateActiveNavLink(sectionId);
-      }
-    });
-  }, observerOptions);
+  const SCROLL_OFFSET = 20;
+  const MOBILE_BREAKPOINT = 1100;
 
-  sections.forEach(section => {
-    navObserver.observe(section);
-  });
-
-  // Fallback scroll-based active navigation
-  const scrollHandler = ProfileWebsite.throttle(() => {
-    let current = '';
-    const scrollPosition = window.pageYOffset + 100;
-
-    sections.forEach(section => {
-      const sectionTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-
-      if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-        current = section.getAttribute('id');
-      }
-    });
-
-    if (current) {
-      updateActiveNavLink(current);
-    }
-  }, 100);
-
-  window.addEventListener('scroll', scrollHandler);
-}
-
-// Update active navigation link
-function updateActiveNavLink(sectionId) {
-  const navLinks = document.querySelectorAll('.nav-link');
-
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-
-    const href = link.getAttribute('href');
-    if (href === `#${sectionId}`) {
-      link.classList.add('active');
-    }
-  });
-}
-
-// ===== Navigation Utilities =====
-
-// Get current section based on scroll position
-function getCurrentSection() {
-  const sections = document.querySelectorAll('section[id]');
-  const scrollPosition = window.pageYOffset + 100;
-
-  for (let i = sections.length - 1; i >= 0; i--) {
-    const section = sections[i];
-    const sectionTop = section.offsetTop;
-
-    if (scrollPosition >= sectionTop) {
-      return section.getAttribute('id');
-    }
+  function getNavigationHeight() {
+    const navbar = document.querySelector(SELECTORS.navbar);
+    return navbar ? navbar.offsetHeight : 0;
   }
 
-  return null;
-}
+  function closeMobileMenu() {
+    const navToggle = document.querySelector(SELECTORS.navToggle);
+    const navMenu = document.querySelector(SELECTORS.navMenu);
 
-// Scroll to specific section
-function scrollToSection(sectionId, offset = 0) {
-  const targetElement = document.querySelector(`#${sectionId}`);
+    if (!navToggle || !navMenu) return;
 
-  if (targetElement) {
-    const headerHeight = document.querySelector('.navbar').offsetHeight;
-    const elementPosition = targetElement.offsetTop;
-    const offsetPosition = elementPosition - headerHeight - offset;
+    navToggle.classList.remove('active');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navMenu.classList.remove('active');
+    document.body.style.overflow = '';
+  }
 
-    window.scrollTo({
-      top: offsetPosition,
-      behavior: 'smooth'
+  function toggleMobileMenu() {
+    const navToggle = document.querySelector(SELECTORS.navToggle);
+    const navMenu = document.querySelector(SELECTORS.navMenu);
+
+    if (!navToggle || !navMenu) return;
+
+    const isExpanded = navToggle.classList.toggle('active');
+    navToggle.setAttribute('aria-expanded', String(isExpanded));
+    navMenu.classList.toggle('active', isExpanded);
+    document.body.style.overflow = isExpanded ? 'hidden' : '';
+  }
+
+  function updateActiveNavLink(sectionId) {
+    document.querySelectorAll(SELECTORS.navLink).forEach((link) => {
+      link.classList.toggle('active', link.getAttribute('href') === `#${sectionId}`);
     });
+  }
+
+  function getCurrentSection() {
+    const scrollPosition = window.scrollY + getNavigationHeight() + SCROLL_OFFSET + 1;
+    const sections = Array.from(document.querySelectorAll(SELECTORS.section));
+
+    for (let index = sections.length - 1; index >= 0; index -= 1) {
+      const section = sections[index];
+      if (scrollPosition >= section.offsetTop) {
+        return section.id;
+      }
+    }
+
+    return sections.length > 0 ? sections[0].id : null;
+  }
+
+  function scrollToSection(sectionId, updateHistory = true) {
+    const target = document.getElementById(sectionId);
+    if (!target) return false;
+
+    const top = target.offsetTop - getNavigationHeight() - SCROLL_OFFSET;
+    window.scrollTo({ top: Math.max(top, 0), behavior: 'smooth' });
+
+    updateActiveNavLink(sectionId);
+    closeMobileMenu();
+
+    if (updateHistory && window.history.pushState) {
+      window.history.pushState(null, '', `#${sectionId}`);
+    }
 
     return true;
   }
 
-  return false;
-}
+  function navigateByOffset(offset) {
+    const sections = Array.from(document.querySelectorAll(SELECTORS.section));
+    const currentSection = getCurrentSection();
+    const currentIndex = sections.findIndex((section) => section.id === currentSection);
+    const nextSection = sections[currentIndex + offset];
 
-// Check if navigation is mobile
-function isMobileNavigation() {
-  return window.innerWidth <= 768;
-}
-
-// Get navigation height
-function getNavigationHeight() {
-  const navbar = document.querySelector('.navbar');
-  return navbar ? navbar.offsetHeight : 0;
-}
-
-// ===== Keyboard Navigation =====
-function setupKeyboardNavigation() {
-  document.addEventListener('keydown', function(e) {
-    // ESC key closes mobile menu
-    if (e.key === 'Escape') {
-      const navToggle = document.querySelector('.nav-toggle');
-      const navMenu = document.querySelector('.nav-menu');
-
-      if (navToggle && navMenu && navMenu.classList.contains('active')) {
-        navToggle.classList.remove('active');
-        navMenu.classList.remove('active');
-        navToggle.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      }
+    if (nextSection) {
+      scrollToSection(nextSection.id);
     }
-
-    // Arrow keys for section navigation
-    if (e.key === 'ArrowDown' && e.ctrlKey) {
-      e.preventDefault();
-      navigateToNextSection();
-    }
-
-    if (e.key === 'ArrowUp' && e.ctrlKey) {
-      e.preventDefault();
-      navigateToPreviousSection();
-    }
-  });
-}
-
-// Navigate to next section
-function navigateToNextSection() {
-  const sections = document.querySelectorAll('section[id]');
-  const currentSection = getCurrentSection();
-
-  if (!currentSection || sections.length === 0) return;
-
-  const currentIndex = Array.from(sections).findIndex(
-    section => section.getAttribute('id') === currentSection
-  );
-
-  if (currentIndex < sections.length - 1) {
-    const nextSection = sections[currentIndex + 1];
-    scrollToSection(nextSection.getAttribute('id'));
-  }
-}
-
-// Navigate to previous section
-function navigateToPreviousSection() {
-  const sections = document.querySelectorAll('section[id]');
-  const currentSection = getCurrentSection();
-
-  if (!currentSection || sections.length === 0) return;
-
-  const currentIndex = Array.from(sections).findIndex(
-    section => section.getAttribute('id') === currentSection
-  );
-
-  if (currentIndex > 0) {
-    const previousSection = sections[currentIndex - 1];
-    scrollToSection(previousSection.getAttribute('id'));
-  }
-}
-
-// ===== Navigation State Management =====
-class NavigationState {
-  constructor() {
-    this.currentSection = null;
-    this.isMenuOpen = false;
-    this.scrollPosition = 0;
   }
 
-  updateCurrentSection(sectionId) {
-    this.currentSection = sectionId;
-    this.notifyStateChange();
-  }
+  function initializeMobileMenu() {
+    const navToggle = document.querySelector(SELECTORS.navToggle);
+    const navMenu = document.querySelector(SELECTORS.navMenu);
 
-  updateMenuState(isOpen) {
-    this.isMenuOpen = isOpen;
-    this.notifyStateChange();
-  }
+    if (!navToggle || !navMenu) return;
 
-  updateScrollPosition(position) {
-    this.scrollPosition = position;
-    this.notifyStateChange();
-  }
+    navToggle.addEventListener('click', toggleMobileMenu);
 
-  notifyStateChange() {
-    // Dispatch custom event for state changes
-    const event = new CustomEvent('navigationStateChange', {
-      detail: {
-        currentSection: this.currentSection,
-        isMenuOpen: this.isMenuOpen,
-        scrollPosition: this.scrollPosition
-      }
+    document.addEventListener('click', (event) => {
+      if (!navMenu.classList.contains('active')) return;
+      if (navToggle.contains(event.target) || navMenu.contains(event.target)) return;
+      closeMobileMenu();
     });
 
-    document.dispatchEvent(event);
+    window.addEventListener('resize', site.throttle(() => {
+      if (window.innerWidth > MOBILE_BREAKPOINT) {
+        closeMobileMenu();
+      }
+    }, 150));
   }
-}
 
-// Create global navigation state
-const navigationState = new NavigationState();
+  function initializeSmoothScrolling() {
+    document.addEventListener('click', (event) => {
+      const link = event.target.closest('a[href^="#"]');
+      if (!link) return;
 
-// ===== Initialize Keyboard Navigation =====
-document.addEventListener('DOMContentLoaded', function() {
-  setupKeyboardNavigation();
-});
+      const targetId = link.getAttribute('href').slice(1);
+      if (!targetId) return;
 
-// ===== Export Navigation Functions =====
-window.ProfileWebsite.navigation = {
-  scrollToSection,
-  getCurrentSection,
-  isMobileNavigation,
-  getNavigationHeight,
-  navigateToNextSection,
-  navigateToPreviousSection,
-  navigationState
-};
+      event.preventDefault();
+      scrollToSection(targetId);
+    });
+  }
+
+  function initializeActiveNavigation() {
+    const sections = Array.from(document.querySelectorAll(SELECTORS.section));
+    if (sections.length === 0) return;
+
+    if ('IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            updateActiveNavLink(entry.target.id);
+          }
+        });
+      }, {
+        rootMargin: `-${getNavigationHeight() + SCROLL_OFFSET}px 0px -55% 0px`,
+        threshold: 0.1
+      });
+
+      sections.forEach((section) => observer.observe(section));
+      return;
+    }
+
+    window.addEventListener('scroll', site.throttle(() => {
+      const currentSection = getCurrentSection();
+      if (currentSection) updateActiveNavLink(currentSection);
+    }, 100));
+  }
+
+  function initializeNavbarState() {
+    const navbar = document.querySelector(SELECTORS.navbar);
+    if (!navbar) return;
+
+    const updateScrolledState = () => {
+      navbar.classList.toggle('scrolled', window.scrollY > 50);
+    };
+
+    updateScrolledState();
+    window.addEventListener('scroll', site.throttle(updateScrolledState, 100));
+  }
+
+  function initializeKeyboardNavigation() {
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        closeMobileMenu();
+        return;
+      }
+
+      if (event.ctrlKey && event.key === 'ArrowDown') {
+        event.preventDefault();
+        navigateByOffset(1);
+      }
+
+      if (event.ctrlKey && event.key === 'ArrowUp') {
+        event.preventDefault();
+        navigateByOffset(-1);
+      }
+    });
+  }
+
+  function init() {
+    initializeMobileMenu();
+    initializeSmoothScrolling();
+    initializeActiveNavigation();
+    initializeNavbarState();
+    initializeKeyboardNavigation();
+  }
+
+  site.navigation = {
+    init,
+    closeMobileMenu,
+    getCurrentSection,
+    getNavigationHeight,
+    scrollToSection,
+    updateActiveNavLink
+  };
+}());

@@ -66,6 +66,8 @@
 html {
   scroll-behavior: smooth;
   font-size: 16px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -74,6 +76,12 @@ body {
   color: var(--text-primary);
   background-color: var(--background);
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+body > * {
+  max-width: 100vw;
 }
 
 img {
@@ -84,6 +92,12 @@ img {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 3px;
 }
 
 ul, ol {
@@ -124,6 +138,7 @@ ul, ol {
   border-bottom: 1px solid var(--border-color);
   z-index: 1000;
   transition: var(--transition-normal);
+  overflow-x: clip;
 }
 
 .navbar.scrolled {
@@ -183,6 +198,9 @@ ul, ol {
   display: none;
   flex-direction: column;
   cursor: pointer;
+  background: transparent;
+  border: 0;
+  padding: var(--spacing-2);
 }
 
 .bar {
@@ -191,6 +209,41 @@ ul, ol {
   background-color: var(--text-primary);
   margin: 3px 0;
   transition: var(--transition-fast);
+}
+
+@media (max-width: 1100px) {
+  .nav-menu {
+    position: fixed;
+    left: -100%;
+    top: 70px;
+    flex-direction: column;
+    background-color: var(--background);
+    width: 100%;
+    text-align: center;
+    transition: var(--transition-normal);
+    box-shadow: var(--shadow-medium);
+    padding: var(--spacing-6) 0;
+  }
+
+  .nav-menu.active {
+    left: 0;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+  }
+
+  .nav-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+
+  .nav-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
 }
 
 /* ===== Hero Section ===== */
@@ -431,39 +484,6 @@ ul, ol {
 
 /* ===== Responsive Design ===== */
 @media (max-width: 768px) {
-  .nav-menu {
-    position: fixed;
-    left: -100%;
-    top: 70px;
-    flex-direction: column;
-    background-color: var(--background);
-    width: 100%;
-    text-align: center;
-    transition: var(--transition-normal);
-    box-shadow: var(--shadow-medium);
-    padding: var(--spacing-6) 0;
-  }
-
-  .nav-menu.active {
-    left: 0;
-  }
-
-  .nav-toggle {
-    display: flex;
-  }
-
-  .nav-toggle.active .bar:nth-child(2) {
-    opacity: 0;
-  }
-
-  .nav-toggle.active .bar:nth-child(1) {
-    transform: translateY(8px) rotate(45deg);
-  }
-
-  .nav-toggle.active .bar:nth-child(3) {
-    transform: translateY(-8px) rotate(-45deg);
-  }
-
   .hero {
     padding-top: var(--spacing-20);
   }
